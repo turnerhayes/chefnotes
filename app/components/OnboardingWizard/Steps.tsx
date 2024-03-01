@@ -1,27 +1,24 @@
 
-import { ChangeEvent, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import {
   Box,
   Button,
   Container,
   Grid,
   IconButton,
-  Input,
-  InputAdornment,
-  List,
-  ListItemButton,
   Stack,
   ToggleButton,
   ToggleButtonGroup,
   Typography
 } from "@mui/material";
-import { Google, Search as SearchIcon } from "@mui/icons-material";
+import GoogleIcon from "@mui/icons-material/Google";
 import { signIn } from "next-auth/react";
-import fuzzysort from "fuzzysort";
 import { AppIcon } from "@/app/components/AppIcon";
 import { OnboardingStep } from "./OnboardingStep";
 import { setOnboardingComplete } from "@/app/onboarding";
 import { useRouter } from "next/navigation";
+import { SelectableList } from "./SelectableList";
+import styles from "./Steps.module.css";
 
 
 export const NUM_STEPS = 10;
@@ -41,6 +38,8 @@ export enum Step {
   CONCLUSION = 9,
 };
 
+
+
 export const IntroStep = ({
   onContinue,
 }: {
@@ -56,8 +55,13 @@ export const IntroStep = ({
   }, [onContinue]);
 
   return (
-    <Stack>
-        <AppIcon />
+    <Stack
+        alignItems="center"
+        justifyContent="center"
+    >
+        <AppIcon
+            className={styles.introIcon}
+        />
 
         <Container sx={{padding: 2, }}>
             <Typography variant="h5" align="center">
@@ -135,7 +139,7 @@ export const SigninStep = ({
 
       <Container>
         <IconButton onClick={handleGoogleClick}>
-          <Google />
+          <GoogleIcon />
         </IconButton>
       </Container>
     </OnboardingStep>
@@ -307,19 +311,24 @@ export const DietaryRestrictionsStep = ({
   );
 };
 
-export const AllergiesStep = ({
-  onContinue,
-  onStepBack,
-  onStepForward,
-}: {
-  onContinue: () => void;
-  onStepBack: () => void;
-  onStepForward: () => void;
-}) => {
-  const handleNoClick = useCallback(() => {
-    onContinue();
-  }, [onContinue]);
 
+const ALL_ALLERGIES = [
+    "Peanuts",
+    "Strawberries",
+    "Shellfish",
+];
+
+export const AllergiesStep = ({
+    selectedAllergies,
+    updateSelectedAllergies,
+    onStepBack,
+    onStepForward,
+}: {
+    selectedAllergies: string[];
+    updateSelectedAllergies: (allergies: string[]) => void;
+    onStepBack: () => void;
+    onStepForward: () => void;
+}) => {
   return (
     <OnboardingStep
       totalSteps={NUM_STEPS - STEPS_WITHOUT_DOTS}
@@ -327,14 +336,16 @@ export const AllergiesStep = ({
       onStepBack={onStepBack}
       onStepForward={onStepForward}
     >
-        <Typography align="center">
-            Do you have any allergies?
-        </Typography>
-
         <Stack>
-            <Button variant="contained" onClick={handleNoClick}>
-                No
-            </Button>
+            <Typography align="center">
+                Do you have any allergies?
+            </Typography>
+
+            <SelectableList
+                items={ALL_ALLERGIES}
+                selectedItems={selectedAllergies}
+                updateSelectedItems={updateSelectedAllergies}
+            />
         </Stack>
     </OnboardingStep>
   );
@@ -342,7 +353,7 @@ export const AllergiesStep = ({
 
 
 const ALL_TOOLS = [
-  "Stove top",
+  "Stove Top",
   "Oven",
   "Skillet",
   "Pots",
@@ -351,37 +362,8 @@ const ALL_TOOLS = [
   "Blender",
   "Knives",
   "Mixing Bowls",
+  "Stand Mixer",
 ];
-
-export const ToolListItem = ({
-  tool,
-  isSelected,
-  onSelected,
-  onUnselected,
-}: {
-  tool: string;
-  isSelected: boolean;
-  onSelected: (tool: string) => void;
-  onUnselected: (tool: string) => void;
-}) => {
-  const handleClick = useCallback(() => {
-    if (isSelected) {
-      onUnselected(tool);
-    }
-    else {
-      onSelected(tool);
-    }
-  }, [onSelected, onUnselected, tool, isSelected]);
-
-  return (
-    <ListItemButton
-        selected={isSelected}
-        onClick={handleClick}
-    >
-        {tool}
-    </ListItemButton>
-  );
-};
 
 export const ToolsStep = ({
   selectedTools,
@@ -394,69 +376,25 @@ export const ToolsStep = ({
   onStepBack: () => void;
   onStepForward: () => void;
 }) => {
-  const [searchString, setSearchString] = useState("");
-  const [searchResults, setSearchResults] = useState(ALL_TOOLS);
+    return (
+        <OnboardingStep
+            totalSteps={NUM_STEPS - STEPS_WITHOUT_DOTS}
+            step={Step.TOOLS - STEPS_WITHOUT_DOTS}
+            onStepBack={onStepBack}
+            onStepForward={onStepForward}
+        >
+            <Typography align="center">
+                What kitchen utensils and equipment do you have in your kitchen?
+            </Typography>
 
-  const handleSearchChanged = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    const searchString = event.target.value;
-    setSearchString(searchString);
-    if (searchString.length === 0) {
-      setSearchResults(ALL_TOOLS);
-      return;
-    }
-    const results = fuzzysort.go(searchString, ALL_TOOLS);
-    setSearchResults(results.map(({target}) => target));
-  }, [setSearchString, setSearchResults]);
-
-  const handleToolSelected = useCallback((tool: string) => {
-    const newResults = new Set(selectedTools);
-    newResults.add(tool);
-    updateSelectedTools(Array.from(newResults));
-  }, [updateSelectedTools, selectedTools]);
-
-  const handleToolUnselected = useCallback((tool: string) => {
-    const newResults = new Set(selectedTools);
-    newResults.delete(tool);
-    updateSelectedTools(Array.from(newResults));
-  }, [updateSelectedTools, selectedTools]);
-
-  return (
-    <OnboardingStep
-        totalSteps={NUM_STEPS - STEPS_WITHOUT_DOTS}
-        step={Step.TOOLS - STEPS_WITHOUT_DOTS}
-        onStepBack={onStepBack}
-        onStepForward={onStepForward}
-    >
-      <Typography>What kitchen utensils and equipment do you have in your kitchen?</Typography>
-
-      <Stack>
-        <Box sx={{paddingTop: 2}}>
-            <Input
-                fullWidth
-                value={searchString}
-                onChange={handleSearchChanged}
-                placeholder="Microwave, stove, etc."
-                startAdornment={
-                    <InputAdornment position="start">
-                    <SearchIcon />
-                    </InputAdornment>
-                }
+            <SelectableList
+                items={ALL_TOOLS}
+                searchPlaceholder="Microwave, stove, etc."
+                selectedItems={selectedTools}
+                updateSelectedItems={updateSelectedTools}
             />
-        </Box>
-        <List>
-            {searchResults.map((tool) => (
-                <ToolListItem
-                    key={tool}
-                    tool={tool}
-                    isSelected={selectedTools.includes(tool)}
-                    onSelected={handleToolSelected}
-                    onUnselected={handleToolUnselected}
-                />
-            ))}
-        </List>
-      </Stack>
-    </OnboardingStep>
-  );
+        </OnboardingStep>
+    );
 };
 
 export const ConclusionStep = ({
@@ -469,7 +407,7 @@ export const ConclusionStep = ({
     const router = useRouter();
     const handleClick = useCallback(() => {
         setOnboardingComplete();
-        router.push("/");
+        router.push("/pantry");
     }, [router]);
 
     return (
@@ -480,7 +418,7 @@ export const ConclusionStep = ({
             onStepForward={onStepForward}
         >
             <Stack>
-                <Typography align="center">
+                <Typography align="center" paddingTop={2} paddingBottom={2}>
                     We&apos;ve recorded all of your answers in order to give you the best
                     customizable recipes, tailored just for you! You can always reset
                     your preferences in your &quot;Profile&quot;.

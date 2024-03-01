@@ -33,12 +33,16 @@ export const OnboardingStep = ({
             alignItems="center"
             justifyContent="stretch"
             padding={3}
+            paddingTop={0}
             height="100%"
+            overflow="hidden"
         >
-            <Container>
-                <AppIcon />
+            <Container sx={{paddingTop: 2, display: "flex", justifyContent: "center"}}>
+                <AppIcon
+                    className={styles.stepLogo}
+                />
             </Container>
-            <Container sx={{flex: 1}}>
+            <Container sx={{flex: 1, overflow: "auto", paddingTop: 4}}>
                 {children}
             </Container>
             {

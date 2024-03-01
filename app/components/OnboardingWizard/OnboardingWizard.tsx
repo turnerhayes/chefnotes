@@ -29,6 +29,7 @@ export const OnboardingWizard = ({
   const [restrictions, setRestrictions] = useState<string[]>([]);
   const [numDiners, setNumDiners] = useState<number|null>(null);
   const [tools, setTools] = useState<string[]>([]);
+  const [allergies, setAllergies] = useState<string[]>([]);
 
   useEffect(() => {
     if (step > Step.SIGNIN && !userDisplayName) {
@@ -83,7 +84,8 @@ export const OnboardingWizard = ({
       {step === Step.ALLERGIES && (<AllergiesStep
         onStepBack={handleBackClick}
         onStepForward={handleForwardClick}
-        onContinue={handleForwardClick}
+        selectedAllergies={allergies}
+        updateSelectedAllergies={setAllergies}
       />)}
       {step === Step.TOOLS && (<ToolsStep
         selectedTools={tools}

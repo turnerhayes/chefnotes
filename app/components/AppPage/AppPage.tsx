@@ -126,7 +126,10 @@ export const AppPage = ({
                 <Toolbar
                     sx={{paddingLeft: 0}}
                 >
-                    <AppIcon className={styles.headerIcon} />
+                    <AppIcon
+                        width={24}
+                        height={24}
+                    />
                     <Stack>
                         <Typography
                             variant="h4"

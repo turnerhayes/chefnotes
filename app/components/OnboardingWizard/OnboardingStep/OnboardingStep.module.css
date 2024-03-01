@@ -1,11 +1,5 @@
-.root {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-  
-.iconContainer {
-    width: 350px;
+.stepLogo {
+    width: 260px;
+    height: auto;
 }
   
