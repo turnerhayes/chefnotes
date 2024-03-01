@@ -135,13 +135,15 @@ export const SigninStep = ({
 
   return (
     <OnboardingStep>
-      <Typography variant="h3">Welcome to Chefnotes!</Typography>
+      <Stack>
+        <Typography variant="h3" align="center">
+          Welcome to Chefnotes!
+        </Typography>
 
-      <Container>
-        <IconButton onClick={handleGoogleClick}>
-          <GoogleIcon />
+        <IconButton onClick={handleGoogleClick} sx={{paddingTop: 6}}>
+          <GoogleIcon fontSize="large" />
         </IconButton>
-      </Container>
+      </Stack>
     </OnboardingStep>
   );
 };
