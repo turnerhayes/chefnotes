@@ -74,6 +74,7 @@ export const Pantry = () => {
                 {
                     CATEGORIES.map((category) => (
                         <CategoryChip
+                            key={category}
                             category={category}
                             isSelected={selectedCategory === category}
                             onSelected={handleCategorySelected}

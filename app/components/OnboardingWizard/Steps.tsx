@@ -97,7 +97,7 @@ export const WelcomeStep = ({
         <Typography
             align="center"
         >
-            Let's make the most of what&apos;s in your kitchen. Ready to cook?
+            Let&apos;s make the most of what&apos;s in your kitchen. Ready to cook?
         </Typography>
         <Button
             onClick={handleClick}
@@ -371,7 +371,7 @@ export const ToolListItem = ({
     else {
       onSelected(tool);
     }
-  }, [onSelected, tool, isSelected]);
+  }, [onSelected, onUnselected, tool, isSelected]);
 
   return (
     <ListItemButton
@@ -470,7 +470,7 @@ export const ConclusionStep = ({
     const handleClick = useCallback(() => {
         setOnboardingComplete();
         router.push("/");
-    }, [setOnboardingComplete]);
+    }, [router]);
 
     return (
         <OnboardingStep
