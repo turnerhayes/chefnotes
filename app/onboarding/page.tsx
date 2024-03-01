@@ -12,7 +12,7 @@ const OnboardingPage = () => {
   if (status === "loading") {
     return (
       <div>Loading...</div>
-    )
+    );
   }
 
   return <OnboardingWizard userDisplayName={session?.user?.name ?? undefined} />;
