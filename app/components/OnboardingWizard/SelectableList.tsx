@@ -48,7 +48,7 @@ export const SelectableList = ({
         }
         const results = fuzzysort.go(searchString, items);
         setSearchResults(results.map(({target}) => target));
-    }, []);
+    }, [setSearchResults, setSearchString, items]);
 
     const handleItemSelectionChanged = useCallback((item: string, isSelected: boolean) => {
         const set = new Set(selectedItems);

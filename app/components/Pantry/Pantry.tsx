@@ -22,7 +22,7 @@ const CategoryChip = ({
 }) => {
     const onCategoryChipClick = useCallback(() => {
         onSelected(category);
-    }, [onSelected]);
+    }, [onSelected, category]);
     
     return (
         <Chip
