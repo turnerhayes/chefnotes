@@ -35,6 +35,9 @@ export const OnboardingWizard = ({
     if (step > Step.SIGNIN && !userDisplayName) {
       setStep(Step.SIGNIN);
     }
+    if (step <= Step.SIGNIN && userDisplayName) {
+      setStep(Step.SIGNIN + 1);
+    }
   }, [setStep, step, userDisplayName]);
 
   const handleBackClick = useCallback(() => {
