@@ -18,7 +18,6 @@ import { OnboardingStep } from "./OnboardingStep";
 import { setOnboardingComplete } from "@/app/onboarding";
 import { useRouter } from "next/navigation";
 import { SelectableList } from "./SelectableList";
-import styles from "./Steps.module.css";
 
 
 export const NUM_STEPS = 10;
@@ -59,15 +58,16 @@ export const IntroStep = ({
         alignItems="center"
         justifyContent="center"
     >
-        <AppIcon
-            className={styles.introIcon}
-        />
+      <AppIcon
+        width={350}
+        height={350}
+      />
 
-        <Container sx={{padding: 2, }}>
-            <Typography variant="h5" align="center">
-                Click anywhere to begin
-            </Typography>
-        </Container>
+      <Container sx={{padding: 2, }}>
+          <Typography variant="h5" align="center">
+              Click anywhere to begin
+          </Typography>
+      </Container>
     </Stack>
   );
 };
