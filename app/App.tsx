@@ -2,6 +2,7 @@
 
 import { SessionProvider } from "next-auth/react";
 import { Stack } from "@mui/material";
+import StoreProvider from "@/redux/StoreProvider";
 
 export const App = ({
     children,
@@ -10,15 +11,17 @@ export const App = ({
   }) => {
     return (
         <SessionProvider>
-            <Stack
-                direction="column"
-                alignItems="center"
-                height="100vh"
-                width="100vw"
-                component="main"
-            >
-                {children}
-            </Stack>
+            <StoreProvider>
+                <Stack
+                    direction="column"
+                    alignItems="center"
+                    height="100vh"
+                    width="100vw"
+                    component="main"
+                >
+                    {children}
+                </Stack>
+            </StoreProvider>
         </SessionProvider>
     );
 };

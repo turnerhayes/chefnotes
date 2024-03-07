@@ -13,11 +13,13 @@
     "@emotion/styled": "11.11.0",
     "@mui/icons-material": "5.15.11",
     "@mui/material": "5.15.11",
+    "@reduxjs/toolkit": "^2.2.1",
     "fuzzysort": "^2.0.4",
     "next": "14.1.0",
     "next-auth": "4.24.6",
     "react": "^18",
     "react-dom": "^18",
+    "react-redux": "^9.1.0",
     "sharp": "^0.33.2"
   },
   "devDependencies": {
