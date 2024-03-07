@@ -19,6 +19,7 @@ const SelectableListItem = ({
     return (
         <ListItemButton
             onClick={handleClick}
+            selected={isSelected}
         >
             {item}
         </ListItemButton>
@@ -52,7 +53,7 @@ export const SelectableList = ({
 
     const handleItemSelectionChanged = useCallback((item: string, isSelected: boolean) => {
         const set = new Set(selectedItems);
-        if (isSelected) {
+        if (!isSelected) {
             set.delete(item);
         }
         else {

@@ -16,6 +16,8 @@ import {
   NUM_STEPS,
   Step,
 } from "./Steps";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { setAllergens, setAvailableTools, setDietaryRestrictions, setNumDiners } from "@/redux/slices/profile";
 
 
 
@@ -26,11 +28,6 @@ export const OnboardingWizard = ({
 }) => {
   const [step, setStep] = useState(Step.INTRO);
 
-  const [restrictions, setRestrictions] = useState<string[]>([]);
-  const [numDiners, setNumDiners] = useState<number|null>(null);
-  const [tools, setTools] = useState<string[]>([]);
-  const [allergies, setAllergies] = useState<string[]>([]);
-
   useEffect(() => {
     if (step > Step.SIGNIN && !userDisplayName) {
       setStep(Step.SIGNIN);
@@ -39,6 +36,29 @@ export const OnboardingWizard = ({
       setStep(Step.SIGNIN + 1);
     }
   }, [setStep, step, userDisplayName]);
+
+  const dispatch = useAppDispatch();
+
+  const allergens = useAppSelector((state) => state.profile.allergens);
+  const restrictions = useAppSelector((state) => state.profile.dietaryRestrictions);
+  const tools = useAppSelector((state) => state.profile.availableTools);
+  const numDiners = useAppSelector((state) => state.profile.numDiners);
+
+  const handleUpdateAllergens = useCallback((allergens: string[]) => {
+    dispatch(setAllergens(allergens));
+  }, [dispatch]);
+
+  const handleUpdateDietaryRestrictions = useCallback((restrictions: string[]) => {
+    dispatch(setDietaryRestrictions(restrictions));
+  }, [dispatch]);
+
+  const handleSetTools = useCallback((tools: string[]) => {
+    dispatch(setAvailableTools(tools));
+  }, [dispatch]);
+
+  const handleUpdateNumDiners = useCallback((numDiners: number|null) => {
+    dispatch(setNumDiners(numDiners));
+  }, [dispatch]);
 
   const handleBackClick = useCallback(() => {
     setStep(Math.max(step - 1, 0));
@@ -76,23 +96,23 @@ export const OnboardingWizard = ({
         onStepBack={handleBackClick}
         onStepForward={handleForwardClick}
         numDiners={numDiners}
-        updateNumDiners={setNumDiners}
+        updateNumDiners={handleUpdateNumDiners}
       />)}
       {step === Step.DIET && (<DietaryRestrictionsStep
         onStepBack={handleBackClick}
         onStepForward={handleForwardClick}
         restrictions={restrictions}
-        updateRestrictions={setRestrictions}
+        updateRestrictions={handleUpdateDietaryRestrictions}
       />)}
       {step === Step.ALLERGIES && (<AllergiesStep
         onStepBack={handleBackClick}
         onStepForward={handleForwardClick}
-        selectedAllergies={allergies}
-        updateSelectedAllergies={setAllergies}
+        selectedAllergies={allergens}
+        updateSelectedAllergies={handleUpdateAllergens}
       />)}
       {step === Step.TOOLS && (<ToolsStep
         selectedTools={tools}
-        updateSelectedTools={setTools}
+        updateSelectedTools={handleSetTools}
         onStepBack={handleBackClick}
         onStepForward={handleForwardClick}
       />)}

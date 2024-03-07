@@ -1,6 +1,5 @@
 import { ReactNode } from "react";
 import { AppIcon } from "@/app/components/AppIcon";
-import styles from "./OnboardingStep.module.css";
 import { Button, Container, MobileStepper, Stack } from "@mui/material";
 
 
@@ -35,11 +34,13 @@ export const OnboardingStep = ({
             padding={3}
             paddingTop={0}
             height="100%"
+            width="100%"
             overflow="hidden"
         >
             <Container sx={{paddingTop: 2, display: "flex", justifyContent: "center"}}>
                 <AppIcon
-                    className={styles.stepLogo}
+                    width={260}
+                    height={260}
                 />
             </Container>
             <Container sx={{flex: 1, overflow: "auto", paddingTop: 4}}>
@@ -50,7 +51,6 @@ export const OnboardingStep = ({
                     <MobileStepper
                         sx={{marginTop: "auto"}}
                         position="static"
-                        className={styles.stepperDots}
                         variant="dots"
                         steps={totalSteps}
                         activeStep={step}
