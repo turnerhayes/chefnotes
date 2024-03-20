@@ -8,27 +8,35 @@ import {
   PERSIST,
   PURGE,
   REGISTER,
+  PersistConfig,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { availableIngredientReducer } from "./slices/available_ingredients";
 import { profileReducer } from "./slices/profile";
+import autoMergeLevel2 from "redux-persist/lib/stateReconciler/autoMergeLevel2";
 
-const persistConfig = {
+
+const combinedReducers = combineReducers(
+  {
+    availableIngredients: availableIngredientReducer,
+    profile: profileReducer,
+  },
+);
+
+type SliceReducersState = ReturnType<typeof combinedReducers>;
+
+const persistConfig: PersistConfig<SliceReducersState> = {
   key: "root",
   version: 1,
   storage,
+  stateReconciler: autoMergeLevel2,
 };
 
-const rootReducer = combineReducers({
-  availableIngredients: availableIngredientReducer,
-  profile: profileReducer,
-});
-
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+const rootReducer = persistReducer(persistConfig, combinedReducers);
 
 export const makeStore = () => {
   const store = configureStore({
-    reducer: persistedReducer,
+    reducer: rootReducer,
     middleware: (getDefaultMiddleware) => {
       return getDefaultMiddleware({
         serializableCheck: {

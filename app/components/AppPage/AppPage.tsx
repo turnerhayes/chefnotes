@@ -2,7 +2,6 @@ import { AppBar, BottomNavigation, BottomNavigationAction, Box, Container, Icon,
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useCallback } from "react";
 import { AppIcon } from "@/app/components/AppIcon";
-import styles from "./AppPage.module.css";
 
 const PantryIcon = () => {
     return (
@@ -127,8 +126,8 @@ export const AppPage = ({
                     sx={{paddingLeft: 0}}
                 >
                     <AppIcon
-                        width={24}
-                        height={24}
+                        width={50}
+                        height={50}
                     />
                     <Stack>
                         <Typography
