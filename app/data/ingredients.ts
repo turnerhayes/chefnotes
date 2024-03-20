@@ -15,6 +15,7 @@ const ingredients: Ingredient[] = [
         unitOptions: [
             Unit.GRAMS,
             Unit.MILLIGRAMS,
+            Unit.OUNCES,
         ],
         categories: [
             Category.FISH,
@@ -26,6 +27,7 @@ const ingredients: Ingredient[] = [
         unitOptions: [
             Unit.GRAMS,
             Unit.MILLIGRAMS,
+            Unit.OUNCES,
         ],
         categories: [
             Category.NUTS,
@@ -37,6 +39,7 @@ const ingredients: Ingredient[] = [
         unitOptions: [
             Unit.GRAMS,
             Unit.MILLIGRAMS,
+            Unit.OUNCES,
         ],
         categories: [
             Category.VEGGIES,
@@ -48,9 +51,45 @@ const ingredients: Ingredient[] = [
         unitOptions: [
             Unit.GRAMS,
             Unit.MILLIGRAMS,
+            Unit.OUNCES,
         ],
         categories: [
             Category.MEAT,
+        ],
+    },
+    {
+        id: "fettucine",
+        name: "Fettucine",
+        unitOptions: [
+            Unit.POUNDS,
+            Unit.OUNCES,
+        ],
+        categories: [
+            Category.GRAINS,
+        ],
+    },
+    {
+        id: "ziti",
+        name: "Ziti",
+        unitOptions: [
+            Unit.POUNDS,
+            Unit.OUNCES,
+        ],
+        categories: [
+            Category.GRAINS,
+        ],
+    },
+    {
+        id: "tomato_paste",
+        name: "Tomato Paste",
+        unitOptions: [
+            Unit.GRAMS,
+            Unit.MILLIGRAMS,
+            Unit.POUNDS,
+            Unit.OUNCES,
+        ],
+        categories: [
+            Category.FRUITS,
         ],
     },
 ];

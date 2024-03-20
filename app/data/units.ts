@@ -3,6 +3,8 @@ enum Unit {
     MILLIGRAMS = "mg",
     LITERS = "L",
     MILLILITERS = "mL",
+    POUNDS = "lbs",
+    OUNCES = "oz",
 }
 
 export default Unit;
