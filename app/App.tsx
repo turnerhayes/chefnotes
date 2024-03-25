@@ -1,7 +1,7 @@
 "use client";
 
 import { SessionProvider } from "next-auth/react";
-import { Stack, ThemeProvider, createTheme } from "@mui/material";
+import { Box, Stack, ThemeProvider, createTheme } from "@mui/material";
 import {common} from "@mui/material/colors";
 import StoreProvider from "@/redux/StoreProvider";
 import { LocalizationProvider } from "@mui/x-date-pickers";
@@ -35,15 +35,13 @@ export const App = ({
             <StoreProvider>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <ThemeProvider theme={theme}>
-                        <Stack
-                            direction="column"
-                            alignItems="center"
+                        <Box
                             height="100vh"
                             width="100vw"
                             component="main"
                         >
                             {children}
-                        </Stack>
+                        </Box>
                     </ThemeProvider>
                 </LocalizationProvider>
             </StoreProvider>

@@ -3,9 +3,10 @@ import { Provider } from "react-redux";
 import { AppStore, makeStoreAndPersistor } from "./store";
 import { PersistGate } from "redux-persist/integration/react";
 import { Persistor } from "redux-persist";
-import { AvailableIngredient, setIngredients } from "./slices/available_ingredients";
-import Category from "@/app/data/categories";
+import { setIngredients } from "./slices/available_ingredients";
 import Unit from "@/app/data/units";
+import { Recipe, setRecipes } from "./slices/recipes";
+import { AvailableIngredient } from "@/app/data/ingredients";
 
 
 export default function StoreProvider({
@@ -25,8 +26,11 @@ export default function StoreProvider({
             (window as any).__setTestIngredients = (ingredients: AvailableIngredient[] = []) => {
                 store.dispatch(setIngredients(ingredients));
             };
-            
-            store.subscribe(() => {
+            (window as any).__setTestRecipes = (recipes: Recipe[] = []) => {
+                store.dispatch(setRecipes(recipes));
+            };
+
+            const subscribeHandler = () => {
                 if (store.getState()._persist.rehydrated) {
                     const ingredients = store.getState().availableIngredients.items;
                     if (!ingredients || ingredients.length == 0) {
@@ -40,11 +44,36 @@ export default function StoreProvider({
                             },
                         ];
                         (window as any).__setTestIngredients(TEST_INGREDIENTS);
-                    }
-                }
-            });
-        }
 
+                    }
+                    const recipes = store.getState().recipes.items;
+                    if (!recipes || recipes.length == 0) {
+                        const TEST_RECIPES: Recipe[] = [
+                            {
+                                id: "lemon_chicken",
+                                title: "Lemon Chicken",
+                                ingredients: [],
+                                isSaved: false,
+                                rating: 7,
+                                timeEstimateMinutes: 40,
+                            },
+                            {
+                                id: "meatloaf",
+                                title: "Meatloaf",
+                                ingredients: [],
+                                isSaved: false,
+                                rating: 8,
+                                timeEstimateMinutes: 30,
+                            },
+                        ];
+                        (window as any).__setTestRecipes(TEST_RECIPES);
+                    }
+                    unsubscribe();
+                }
+            };
+            
+            const unsubscribe = store.subscribe(subscribeHandler);
+        }
     }
 
     return (

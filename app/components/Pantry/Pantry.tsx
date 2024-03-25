@@ -1,3 +1,5 @@
+"use client";
+
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
@@ -22,15 +24,10 @@ import fuzzysort from "fuzzysort";
 import dayjs from "dayjs";
 import Category, { ALL_CATEGORIES } from "@/app/data/categories";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { AvailableIngredient, addIngredient, removeIngredient, updateIngredient } from "@/redux/slices/available_ingredients";
-import ALL_INGREDIENTS, { Ingredient } from "@/app/data/ingredients";
+import { addIngredient, removeIngredient, updateIngredient } from "@/redux/slices/available_ingredients";
+import ALL_INGREDIENTS, { AvailableIngredient, IngredientWithAvailability, addAvailabilityToIngredients } from "@/app/data/ingredients";
 import Unit from "@/app/data/units";
 
-
-type IngredientWithAvailability = Ingredient & {
-    quantity?: AvailableIngredient["quantity"];
-    expirationDateTimestamp?: AvailableIngredient["expirationDateTimestamp"];
-};
 
 const IngredientListItem = ({
     ingredient,
@@ -185,31 +182,6 @@ const filterIngredientsIfNeeded = (
                 fuzzyResults == null ||
                 fuzzyResults.find((res) => res.target === ing.name)
             );
-    });
-};
-
-const addAvailabilityToIngredients = (
-    currentIngredients: AvailableIngredient[]
-): IngredientWithAvailability[] => {
-    const currentIngredientsById = currentIngredients.reduce(
-        (idMap: Record<string, AvailableIngredient>, ingredient) => {
-            idMap[ingredient.ingredientId] = ingredient;
-            return idMap;
-        },
-        {}
-    );
-
-    return ALL_INGREDIENTS.map((ingredient): IngredientWithAvailability => {
-        const ingredientWithAvailability: IngredientWithAvailability = {
-            ...ingredient,
-        };
-
-        const curr = currentIngredientsById[ingredient.id];
-        if (curr) {
-            ingredientWithAvailability.quantity = curr.quantity;
-            ingredientWithAvailability.expirationDateTimestamp = curr.expirationDateTimestamp;
-        }
-        return ingredientWithAvailability;
     });
 };
 

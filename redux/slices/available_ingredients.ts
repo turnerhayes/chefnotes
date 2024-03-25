@@ -1,16 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import Unit from "@/app/data/units";
+import { AvailableIngredient } from "@/app/data/ingredients";
 
-interface Quantity {
-    amount: number;
-    unit?: Unit;
-}
-
-export interface AvailableIngredient {
-    ingredientId: string;
-    quantity: Quantity;
-    expirationDateTimestamp?: number;
-}
 
 interface AvailableIngredientState {
     items: AvailableIngredient[];

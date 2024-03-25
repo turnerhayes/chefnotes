@@ -1,4 +1,14 @@
-import { AppBar, BottomNavigation, BottomNavigationAction, Box, Container, Icon, Paper, Stack, SvgIcon, Toolbar, Typography } from "@mui/material";
+"use client";
+
+import AppBar from "@mui/material/AppBar";
+import BottomNavigation from "@mui/material/BottomNavigation";
+import BottomNavigationAction from "@mui/material/BottomNavigationAction";
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useCallback } from "react";
 import { AppIcon } from "@/app/components/AppIcon";
@@ -85,6 +95,10 @@ export enum MenuItem {
     PROFILE = "profile",
 };
 
+const ALL_MENU_ITEMS: MenuItem[] = Object.values(MenuItem).filter(
+    (val) => typeof val === "string"
+);
+
 const MENU_ITEM_TO_PATH: {[key in MenuItem]: string} = {
     [MenuItem.PANTRY]: "/pantry",
     [MenuItem.RECIPES]: "/recipes",
@@ -106,7 +120,11 @@ export const AppPage = ({
     children: ReactNode;
 }) => {
     const pathname = usePathname();
-    const selectedMenuItem = PATH_TO_MENU_ITEM[pathname];
+    const selectedMenuItem = ALL_MENU_ITEMS.find(
+        (menuItem: MenuItem) => pathname.startsWith(
+            MENU_ITEM_TO_PATH[menuItem]
+        )
+    );
 
     const router = useRouter();
     const handleSelectedMenuItemChange = useCallback(
@@ -147,7 +165,7 @@ export const AppPage = ({
                     </Stack>
                 </Toolbar>
             </AppBar>
-            <Container>
+            <Container sx={{padding: 0}}>
                 {children}
             </Container>
             <Paper

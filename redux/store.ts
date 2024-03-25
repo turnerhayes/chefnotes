@@ -14,12 +14,14 @@ import storage from "redux-persist/lib/storage";
 import { availableIngredientReducer } from "./slices/available_ingredients";
 import { profileReducer } from "./slices/profile";
 import autoMergeLevel2 from "redux-persist/lib/stateReconciler/autoMergeLevel2";
+import { recipesReducer } from "./slices/recipes";
 
 
 const combinedReducers = combineReducers(
   {
     availableIngredients: availableIngredientReducer,
     profile: profileReducer,
+    recipes: recipesReducer,
   },
 );
 

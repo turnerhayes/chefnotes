@@ -1,21 +1,7 @@
-"use client";
-
-import { useSession } from "next-auth/react";
 import { AppPage } from "@/app/components/AppPage";
 import { Pantry } from "@/app/components/Pantry";
 
 const PantryPage = () => {
-  const {
-    data: session,
-    status
-  } = useSession();
-
-  if (status === "loading") {
-    return (
-      <div>Loading...</div>
-    );
-  }
-
   return (
     <AppPage
         title="Pantry Inventory"

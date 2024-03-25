@@ -1,12 +1,29 @@
 import Category from "./categories";
 import Unit from "./units";
 
+
 export interface Ingredient {
     id: string;
     name: string;
     unitOptions: Unit[];
     categories: Category[];
 }
+
+export interface AvailableIngredient {
+    ingredientId: string;
+    quantity: Quantity;
+    expirationDateTimestamp?: number;
+}
+
+export interface Quantity {
+    amount: number;
+    unit?: Unit;
+}
+
+export type IngredientWithAvailability = Ingredient & {
+    quantity?: AvailableIngredient["quantity"];
+    expirationDateTimestamp?: AvailableIngredient["expirationDateTimestamp"];
+};
 
 const ingredients: Ingredient[] = [
     {
@@ -96,3 +113,39 @@ const ingredients: Ingredient[] = [
 
 
 export default ingredients;
+
+
+export const addAvailabilityToIngredients = (
+    currentIngredients: AvailableIngredient[],
+    excludeUnavailable: boolean = false
+): IngredientWithAvailability[] => {
+    const currentIngredientsById = currentIngredients.reduce(
+        (idMap: Record<string, AvailableIngredient>, ingredient) => {
+            idMap[ingredient.ingredientId] = ingredient;
+            return idMap;
+        },
+        {}
+    );
+
+    let ingredientsToUse: Ingredient[];
+    if (excludeUnavailable) {
+        const ids = Object.keys(currentIngredientsById);
+        ingredientsToUse = ingredients.filter((ing) => ids.includes(ing.id));
+    }
+    else {
+        ingredientsToUse = ingredients;
+    }
+
+    return ingredientsToUse.map((ingredient): IngredientWithAvailability => {
+        const ingredientWithAvailability: IngredientWithAvailability = {
+            ...ingredient,
+        };
+
+        const curr = currentIngredientsById[ingredient.id];
+        if (curr) {
+            ingredientWithAvailability.quantity = curr.quantity;
+            ingredientWithAvailability.expirationDateTimestamp = curr.expirationDateTimestamp;
+        }
+        return ingredientWithAvailability;
+    });
+};
