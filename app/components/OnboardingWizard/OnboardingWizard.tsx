@@ -18,6 +18,9 @@ import {
 } from "./Steps";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setAllergens, setAvailableTools, setDietaryRestrictions, setNumDiners } from "@/redux/slices/profile";
+import Allergen from "@/app/data/allergens";
+import DietaryRestriction from "@/app/data/dietary_restrictions";
+import KitchenTool from "@/app/data/kitchen_tools";
 
 
 
@@ -44,15 +47,15 @@ export const OnboardingWizard = ({
   const tools = useAppSelector((state) => state.profile.kitchenTools);
   const numDiners = useAppSelector((state) => state.profile.numDiners);
 
-  const handleUpdateAllergens = useCallback((allergens: string[]) => {
+  const handleUpdateAllergens = useCallback((allergens: Allergen[]) => {
     dispatch(setAllergens(allergens));
   }, [dispatch]);
 
-  const handleUpdateDietaryRestrictions = useCallback((restrictions: string[]) => {
+  const handleUpdateDietaryRestrictions = useCallback((restrictions: DietaryRestriction[]) => {
     dispatch(setDietaryRestrictions(restrictions));
   }, [dispatch]);
 
-  const handleSetTools = useCallback((tools: string[]) => {
+  const handleSetTools = useCallback((tools: KitchenTool[]) => {
     dispatch(setAvailableTools(tools));
   }, [dispatch]);
 

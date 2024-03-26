@@ -18,9 +18,9 @@ import { OnboardingStep } from "./OnboardingStep";
 import { setOnboardingComplete } from "@/app/onboarding";
 import { useRouter } from "next/navigation";
 import { SelectableList } from "./SelectableList";
-import { ALL_DIETARY_RESTRICTIONS } from "@/app/data/dietary_restrictions";
-import { ALL_ALLERGENS } from "@/app/data/allergens";
-import { ALL_KITCHEN_TOOLS } from "@/app/data/kitchen_tools";
+import DietaryRestriction, { ALL_DIETARY_RESTRICTIONS } from "@/app/data/dietary_restrictions";
+import Allergen, { ALL_ALLERGENS } from "@/app/data/allergens";
+import KitchenTool, { ALL_KITCHEN_TOOLS } from "@/app/data/kitchen_tools";
 
 
 export const NUM_STEPS = 10;
@@ -263,14 +263,14 @@ export const DietaryRestrictionsStep = ({
   onStepBack,
   onStepForward,
 }: {
-  restrictions: string[];
-  updateRestrictions: (newRestrictions: string[]) => void;
+  restrictions: DietaryRestriction[];
+  updateRestrictions: (newRestrictions: DietaryRestriction[]) => void;
   onStepBack: () => void;
   onStepForward: () => void;
 }) => {
   const handleChange = useCallback((
     event: React.MouseEvent<HTMLElement>,
-    newRestrictions: string[]
+    newRestrictions: DietaryRestriction[]
   ) => {
     updateRestrictions(newRestrictions);
   }, [updateRestrictions]);
@@ -312,8 +312,8 @@ export const AllergiesStep = ({
     onStepBack,
     onStepForward,
 }: {
-    selectedAllergies: string[];
-    updateSelectedAllergies: (allergies: string[]) => void;
+    selectedAllergies: Allergen[];
+    updateSelectedAllergies: (allergies: Allergen[]) => void;
     onStepBack: () => void;
     onStepForward: () => void;
 }) => {
@@ -345,8 +345,8 @@ export const ToolsStep = ({
   onStepBack,
   onStepForward,
 }: {
-  selectedTools: string[];
-  updateSelectedTools: (tools: string[]) => void;
+  selectedTools: KitchenTool[];
+  updateSelectedTools: (tools: KitchenTool[]) => void;
   onStepBack: () => void;
   onStepForward: () => void;
 }) => {

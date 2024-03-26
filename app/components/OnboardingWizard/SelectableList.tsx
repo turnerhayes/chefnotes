@@ -3,14 +3,14 @@ import { Container, Input, InputAdornment, List, ListItemButton, Stack } from "@
 import SearchIcon from "@mui/icons-material/Search";
 import fuzzysort from "fuzzysort";
 
-const SelectableListItem = ({
+const SelectableListItem = <T extends string>({
     item,
     isSelected,
     onSelectionChanged,
 }: {
-    item: string;
+    item: T;
     isSelected: boolean;
-    onSelectionChanged: (item: string, isSelected: boolean) => void;
+    onSelectionChanged: (item: T, isSelected: boolean) => void;
 }) => {
     const handleClick = useCallback(() => {
         onSelectionChanged(item, !isSelected);
@@ -26,15 +26,15 @@ const SelectableListItem = ({
     );
 };
 
-export const SelectableList = ({
+export const SelectableList = <T extends string>({
     items,
     selectedItems,
     updateSelectedItems,
     searchPlaceholder,
 }: {
-    items: string[];
-    selectedItems: string[];
-    updateSelectedItems: (items: string[]) => void;
+    items: T[];
+    selectedItems: T[];
+    updateSelectedItems: (items: T[]) => void;
     searchPlaceholder?: string;
 }) => {
     const [searchString, setSearchString] = useState("");
@@ -48,10 +48,10 @@ export const SelectableList = ({
             return;
         }
         const results = fuzzysort.go(searchString, items);
-        setSearchResults(results.map(({target}) => target));
+        setSearchResults(results.map(({target}) => target as T));
     }, [setSearchResults, setSearchString, items]);
 
-    const handleItemSelectionChanged = useCallback((item: string, isSelected: boolean) => {
+    const handleItemSelectionChanged = useCallback((item: T, isSelected: boolean) => {
         const set = new Set(selectedItems);
         if (!isSelected) {
             set.delete(item);
