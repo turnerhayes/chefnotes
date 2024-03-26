@@ -41,7 +41,7 @@ export const OnboardingWizard = ({
 
   const allergens = useAppSelector((state) => state.profile.allergens);
   const restrictions = useAppSelector((state) => state.profile.dietaryRestrictions);
-  const tools = useAppSelector((state) => state.profile.availableTools);
+  const tools = useAppSelector((state) => state.profile.kitchenTools);
   const numDiners = useAppSelector((state) => state.profile.numDiners);
 
   const handleUpdateAllergens = useCallback((allergens: string[]) => {

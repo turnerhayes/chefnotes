@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { Profile } from "@/app/components/Profile";
-import { AppPage, MenuItem } from "../components/AppPage";
+import { AppPage } from "@/app/components/AppPage";
 
 const ProfilePage = () => {
   const {
@@ -19,8 +19,12 @@ const ProfilePage = () => {
   return (
     <AppPage
         title="My Profile"
+        subtitle="Check out your Chefstreak, saved recipes and edit your 
+        preferences."
     >
-        <></>
+        <Profile
+          user={session!.user!}
+        />
     </AppPage>
   )
 };

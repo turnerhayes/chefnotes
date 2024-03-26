@@ -18,6 +18,9 @@ import { OnboardingStep } from "./OnboardingStep";
 import { setOnboardingComplete } from "@/app/onboarding";
 import { useRouter } from "next/navigation";
 import { SelectableList } from "./SelectableList";
+import { ALL_DIETARY_RESTRICTIONS } from "@/app/data/dietary_restrictions";
+import { ALL_ALLERGENS } from "@/app/data/allergens";
+import { ALL_KITCHEN_TOOLS } from "@/app/data/kitchen_tools";
 
 
 export const NUM_STEPS = 10;
@@ -253,16 +256,6 @@ export const NumDinersStep = ({
   );
 };
 
-const RESTRICTIONS = [
-  "Vegan",
-  "Vegetarian",
-  "Pescetarian",
-  "Dairy-Free",
-  "Kosher",
-  "Halal",
-  "Keto",
-  "Gluten-Free",
-];
 
 export const DietaryRestrictionsStep = ({
   restrictions,
@@ -299,7 +292,7 @@ export const DietaryRestrictionsStep = ({
         >
             <Grid container>
             {
-                RESTRICTIONS.map((restriction) => (
+                ALL_DIETARY_RESTRICTIONS.map((restriction) => (
                     <Grid item key={restriction} xs={6}>
                         <ToggleButton value={restriction} fullWidth>
                             {restriction}
@@ -312,13 +305,6 @@ export const DietaryRestrictionsStep = ({
     </OnboardingStep>
   );
 };
-
-
-const ALL_ALLERGIES = [
-    "Peanuts",
-    "Strawberries",
-    "Shellfish",
-];
 
 export const AllergiesStep = ({
     selectedAllergies,
@@ -344,7 +330,7 @@ export const AllergiesStep = ({
             </Typography>
 
             <SelectableList
-                items={ALL_ALLERGIES}
+                items={ALL_ALLERGENS}
                 selectedItems={selectedAllergies}
                 updateSelectedItems={updateSelectedAllergies}
             />
@@ -352,20 +338,6 @@ export const AllergiesStep = ({
     </OnboardingStep>
   );
 };
-
-
-const ALL_TOOLS = [
-  "Stove Top",
-  "Oven",
-  "Skillet",
-  "Pots",
-  "Pans",
-  "Microwave",
-  "Blender",
-  "Knives",
-  "Mixing Bowls",
-  "Stand Mixer",
-];
 
 export const ToolsStep = ({
   selectedTools,
@@ -390,7 +362,7 @@ export const ToolsStep = ({
             </Typography>
 
             <SelectableList
-                items={ALL_TOOLS}
+                items={ALL_KITCHEN_TOOLS}
                 searchPlaceholder="Microwave, stove, etc."
                 selectedItems={selectedTools}
                 updateSelectedItems={updateSelectedTools}

@@ -1,16 +1,17 @@
 "use client";
 
+import { ReactNode, useCallback } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import AppBar from "@mui/material/AppBar";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
-import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import { usePathname, useRouter } from "next/navigation";
-import { ReactNode, useCallback } from "react";
+import IconButton from "@mui/material/IconButton";
+import BackIcon from "@mui/icons-material/ChevronLeft";
 import { AppIcon } from "@/app/components/AppIcon";
 
 const PantryIcon = () => {
@@ -126,6 +127,8 @@ export const AppPage = ({
         )
     );
 
+    const isARootPage = Object.values(MENU_ITEM_TO_PATH).includes(pathname);
+
     const router = useRouter();
     const handleSelectedMenuItemChange = useCallback(
         (event: unknown, newValue: MenuItem) => {
@@ -133,20 +136,39 @@ export const AppPage = ({
         },
     [router]);
 
+    const handleBackClick = useCallback(() => {
+        router.back();
+    }, [router]);
+
     return (
-        <Box
+        <Stack
             height="100%"
             width="100%"
-            sx={{paddingBottom: 7, flexGrow: 1}}
         >
-            <AppBar position="static">
+            <AppBar
+                position="static"
+            >
                 <Toolbar
                     sx={{paddingLeft: 0}}
                 >
-                    <AppIcon
-                        width={50}
-                        height={50}
-                    />
+                    {
+                        isARootPage ? (
+                            <AppIcon
+                                width={50}
+                                height={50}
+                            />
+                        ) : (
+                            <IconButton
+                                onClick={handleBackClick}
+                            >
+                                <BackIcon
+                                    sx={{
+                                        fontSize: 42,
+                                    }}
+                                />
+                            </IconButton>
+                        )
+                    }
                     <Stack>
                         <Typography
                             variant="h4"
@@ -165,11 +187,14 @@ export const AppPage = ({
                     </Stack>
                 </Toolbar>
             </AppBar>
-            <Container sx={{padding: 0}}>
+            <Container sx={{
+                padding: 0,
+                flexGrow: 1,
+                overflow: "auto",
+            }}>
                 {children}
             </Container>
             <Paper
-                sx={{position: "fixed", bottom: 0, left: 0, right: 0}}
                 elevation={3}
             >
                 <BottomNavigation
@@ -198,6 +223,6 @@ export const AppPage = ({
                     />
                 </BottomNavigation>
             </Paper>
-        </Box>
+        </Stack>
     );
 };
