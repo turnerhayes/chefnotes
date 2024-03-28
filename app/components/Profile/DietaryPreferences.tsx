@@ -21,6 +21,7 @@ import { addAllergen, addDietaryRestriction, removeAllergen, removeDietaryRestri
 import Allergen, { ALL_ALLERGENS } from "@/app/data/allergens";
 import { AddItemDrawer } from "./AddItemDrawer";
 import { ItemList } from "./ItemList";
+import { getUserAllergensSelector, getUserDietaryRestrictionsSelector } from "@/redux/selectors";
 
 
 const Diet = ({
@@ -185,8 +186,8 @@ const AddAllergenDrawer = ({
 };
 
 export const DietaryPreferences = () => {
-    const diets = useAppSelector((state) => state.profile.dietaryRestrictions);
-    const allergens = useAppSelector((state) => state.profile.allergens);
+    const diets = useAppSelector(getUserDietaryRestrictionsSelector);
+    const allergens = useAppSelector(getUserAllergensSelector);
 
     const [
         isAddDietDrawerOpen,

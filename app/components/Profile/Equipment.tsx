@@ -11,11 +11,12 @@ import KitchenTool, { ALL_KITCHEN_TOOLS } from "@/app/data/kitchen_tools";
 import { addKitchenTool, removeKitchenTool } from "@/redux/slices/profile";
 import { AddItemDrawer } from "./AddItemDrawer";
 import { ItemList } from "./ItemList";
+import { getUserKitchenToolsSelector } from "@/redux/selectors";
 
 
 export const Equipment = () => {
     const dispatch = useAppDispatch();
-    const tools = useAppSelector((state) => state.profile.kitchenTools);
+    const tools = useAppSelector(getUserKitchenToolsSelector);
     const [isAddDrawerOpen, setIsAddDrawerOpen] = useState(false)
 
     const handleAddClick = useCallback(() => {

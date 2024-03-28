@@ -2,30 +2,7 @@ import Category from "./categories";
 import Unit from "./units";
 
 
-export interface Ingredient {
-    id: string;
-    name: string;
-    unitOptions: Unit[];
-    categories: Category[];
-}
-
-export interface AvailableIngredient {
-    ingredientId: string;
-    quantity: Quantity;
-    expirationDateTimestamp?: number;
-}
-
-export interface Quantity {
-    amount: number;
-    unit?: Unit;
-}
-
-export type IngredientWithAvailability = Ingredient & {
-    quantity?: AvailableIngredient["quantity"];
-    expirationDateTimestamp?: AvailableIngredient["expirationDateTimestamp"];
-};
-
-const ingredients: Ingredient[] = [
+const ingredients = [
     {
         id: "salmon",
         name: "Salmon",
@@ -109,43 +86,78 @@ const ingredients: Ingredient[] = [
             Category.FRUITS,
         ],
     },
-];
+] as const;
+
+export type IngredientId = typeof ingredients[number]['id'];
 
 
-export default ingredients;
+export interface Ingredient {
+    id: IngredientId;
+    name: string;
+    unitOptions: readonly Unit[];
+    categories: readonly Category[];
+}
+
+export default ingredients as readonly Ingredient[];
 
 
-export const addAvailabilityToIngredients = (
-    currentIngredients: AvailableIngredient[],
+export interface Quantity {
+    amount: number;
+    unit?: Unit;
+}
+
+export interface QuantifiedIngredient {
+    ingredientId: IngredientId;
+    quantity: Quantity;
+}
+
+export interface AvailableIngredient extends QuantifiedIngredient {
+    expirationDateTimestamp?: number;
+}
+
+export type IngredientWithAvailability = Ingredient & Omit<
+    AvailableIngredient, "ingredientId"
+>;
+
+const addAvailabilityToIngredient = <T extends QuantifiedIngredient>(
+    ingredient: Ingredient,
+    available: T|undefined
+): IngredientWithAvailability => {
+    if (!available) {
+        return ingredient as IngredientWithAvailability;
+    }
+
+    const withAvailability: IngredientWithAvailability = {
+        ...ingredient,
+        quantity: available.quantity,
+    };
+
+    if ("expirationDateTimestamp" in available) {
+        withAvailability.expirationDateTimestamp = (
+            available as AvailableIngredient
+        ).expirationDateTimestamp;
+    }
+
+    return withAvailability;
+};
+
+export const addAvailabilityToIngredients = <T extends QuantifiedIngredient>(
+    available: T[],
     excludeUnavailable: boolean = false
 ): IngredientWithAvailability[] => {
-    const currentIngredientsById = currentIngredients.reduce(
-        (idMap: Record<string, AvailableIngredient>, ingredient) => {
-            idMap[ingredient.ingredientId] = ingredient;
-            return idMap;
-        },
-        {}
+    const availableById = available.reduce(
+        (ingredientMap, available) => ({
+            ...ingredientMap,
+            [available.ingredientId]: available,
+        }), {} as Partial<{[id in IngredientId]: T}>
     );
 
-    let ingredientsToUse: Ingredient[];
-    if (excludeUnavailable) {
-        const ids = Object.keys(currentIngredientsById);
-        ingredientsToUse = ingredients.filter((ing) => ids.includes(ing.id));
-    }
-    else {
-        ingredientsToUse = ingredients;
-    }
+    const withAvailability = ingredients.map((ingredient) => addAvailabilityToIngredient(
+        ingredient,
+        availableById[ingredient.id]
+    ));
 
-    return ingredientsToUse.map((ingredient): IngredientWithAvailability => {
-        const ingredientWithAvailability: IngredientWithAvailability = {
-            ...ingredient,
-        };
-
-        const curr = currentIngredientsById[ingredient.id];
-        if (curr) {
-            ingredientWithAvailability.quantity = curr.quantity;
-            ingredientWithAvailability.expirationDateTimestamp = curr.expirationDateTimestamp;
-        }
-        return ingredientWithAvailability;
-    });
+    return excludeUnavailable ?
+        withAvailability.filter((ingredient) => Boolean(ingredient.quantity)) :
+        withAvailability;
 };

@@ -1,15 +1,11 @@
-import { Ingredient, Quantity } from "@/app/data/ingredients";
+import { QuantifiedIngredient } from "@/app/data/ingredients";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-
-export interface RecipeIngredient extends Ingredient {
-    quantity: Quantity;
-}
 
 export interface Recipe {
     id: string;
     title: string;
-    ingredients: RecipeIngredient[];
+    ingredients: QuantifiedIngredient[];
     isSaved: boolean;
     rating: number;
     timeEstimateMinutes: number;
@@ -27,19 +23,18 @@ const slice = createSlice({
     name: "recipes",
     initialState,
     reducers: {
-        addRecipe(state, action: PayloadAction<Recipe>) {
-            state.items.push(action.payload);
+        addRecipe(state, {payload}: PayloadAction<Recipe>) {
+            state.items.push(payload);
         },
 
-        setRecipes(state, action: PayloadAction<Recipe[]>) {
-            state.items = action.payload;
+        setRecipes(state, {payload}: PayloadAction<Recipe[]>) {
+            state.items = payload;
         },
 
-        setRecipeSaved(state, action: PayloadAction<{
+        setRecipeSaved(state, {payload: {recipeId, isSaved}}: PayloadAction<{
             recipeId: string;
             isSaved: boolean;
         }>) {
-            const {recipeId, isSaved} = action.payload;
             const recipe = state.items.find(
                 (r) => r.id === recipeId
             );

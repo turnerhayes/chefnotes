@@ -9,6 +9,7 @@ import TabPanel from "@mui/lab/TabPanel";
 import { useAppSelector } from "@/redux/hooks";
 import { MyIngredientsList } from "./MyIngredientsList";
 import { RecipeList } from "./RecipeList";
+import { getRecipesSelector } from "@/redux/selectors";
 
 
 enum TabName {
@@ -18,7 +19,7 @@ enum TabName {
 
 export const Recipes = () => {
     const [selectedTab, setSelectedTab] = useState(TabName.CHEFS_RECIPES);
-    const recipes = useAppSelector((state) => state.recipes.items);
+    const recipes = useAppSelector(getRecipesSelector);
 
     const handleTabChange = useCallback((event: unknown, value: TabName) => {
         setSelectedTab(value);

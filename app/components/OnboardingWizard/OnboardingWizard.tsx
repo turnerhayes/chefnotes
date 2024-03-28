@@ -21,6 +21,7 @@ import { setAllergens, setAvailableTools, setDietaryRestrictions, setNumDiners }
 import Allergen from "@/app/data/allergens";
 import DietaryRestriction from "@/app/data/dietary_restrictions";
 import KitchenTool from "@/app/data/kitchen_tools";
+import { getUserAllergensSelector, getUserDietaryRestrictionsSelector, getUserKitchenToolsSelector, getUserNumDinersSelector } from "@/redux/selectors";
 
 
 
@@ -42,10 +43,10 @@ export const OnboardingWizard = ({
 
   const dispatch = useAppDispatch();
 
-  const allergens = useAppSelector((state) => state.profile.allergens);
-  const restrictions = useAppSelector((state) => state.profile.dietaryRestrictions);
-  const tools = useAppSelector((state) => state.profile.kitchenTools);
-  const numDiners = useAppSelector((state) => state.profile.numDiners);
+  const allergens = useAppSelector(getUserAllergensSelector);
+  const restrictions = useAppSelector(getUserDietaryRestrictionsSelector);
+  const tools = useAppSelector(getUserKitchenToolsSelector);
+  const numDiners = useAppSelector(getUserNumDinersSelector);
 
   const handleUpdateAllergens = useCallback((allergens: Allergen[]) => {
     dispatch(setAllergens(allergens));

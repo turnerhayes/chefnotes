@@ -24,7 +24,7 @@ export const RecipeCard = ({
 }: RecipeCardProps) => {
     const handleClick = useCallback(() => {
         onClick(recipe);
-    }, [onClick]);
+    }, [onClick, recipe]);
 
     const handleSaveButtonClick = useCallback(() => {
         onToggleSaved(recipe, !recipe.isSaved);

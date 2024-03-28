@@ -25,7 +25,7 @@ import dayjs from "dayjs";
 import Category, { ALL_CATEGORIES } from "@/app/data/categories";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { addIngredient, removeIngredient, updateIngredient } from "@/redux/slices/available_ingredients";
-import ALL_INGREDIENTS, { AvailableIngredient, IngredientWithAvailability, addAvailabilityToIngredients } from "@/app/data/ingredients";
+import { AvailableIngredient, IngredientWithAvailability, addAvailabilityToIngredients } from "@/app/data/ingredients";
 import Unit from "@/app/data/units";
 
 
@@ -256,7 +256,7 @@ const IngredientDrawer = ({
     }, [setQuantityAmountString]);
 
     const handleSubmitChanges = useCallback(() => {
-        const newIngredient = {
+        const newIngredient: AvailableIngredient = {
             ingredientId: ingredient.id,
             quantity: {
                 amount: Number(quantityAmountString),
@@ -286,6 +286,7 @@ const IngredientDrawer = ({
         quantityAmountString,
         selectedUnit,
         expirationDateTimestamp,
+        hasChanges,
     ]);
 
     const handleRemoveIngredient = useCallback(() => {
