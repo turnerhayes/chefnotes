@@ -1,5 +1,5 @@
 
-import { useCallback, useEffect } from "react";
+import { ChangeEvent, Dispatch, FormEvent, SetStateAction, useCallback, useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -7,6 +7,7 @@ import {
   Grid,
   IconButton,
   Stack,
+  TextField,
   ToggleButton,
   ToggleButtonGroup,
   Typography
@@ -58,18 +59,18 @@ export const IntroStep = ({
 
   return (
     <Stack
-        alignItems="center"
-        justifyContent="center"
+      alignItems="center"
+      justifyContent="center"
     >
       <AppIcon
         width={350}
         height={350}
       />
 
-      <Container sx={{padding: 2, }}>
-          <Typography variant="h5" align="center">
-              Click anywhere to begin
-          </Typography>
+      <Container sx={{ padding: 2, }}>
+        <Typography variant="h5" align="center">
+          Click anywhere to begin
+        </Typography>
       </Container>
     </Stack>
   );
@@ -95,27 +96,37 @@ export const WelcomeStep = ({
         alignItems="center"
       >
         <Typography
-            align="center"
-            variant="h4"
-            sx={{paddingTop: 3, paddingBottom: 3}}
+          align="center"
+          variant="h4"
+          sx={{ paddingTop: 3, paddingBottom: 3 }}
         >
           Welcome, {userDisplayName}
         </Typography>
         <Typography
-            align="center"
+          align="center"
         >
-            Let&apos;s make the most of what&apos;s in your kitchen. Ready to cook?
+          Let&apos;s make the most of what&apos;s in your kitchen. Ready to cook?
         </Typography>
         <Button
-            onClick={handleClick}
-            variant="contained"
-            sx={{width: 200, marginTop: 10}}
+          onClick={handleClick}
+          variant="contained"
+          sx={{ width: 200, marginTop: 10 }}
         >
           Get started
         </Button>
       </Stack>
     </OnboardingStep>
   );
+};
+
+const fieldChangeHandler = (
+  setter: Dispatch<SetStateAction<string>>,
+) => {
+  return (event: ChangeEvent<HTMLInputElement>) => {
+    setter(
+      (event.target as HTMLInputElement).value
+    );
+  }
 };
 
 export const SigninStep = ({
@@ -125,9 +136,18 @@ export const SigninStep = ({
   userDisplayName?: string;
   onContinue: () => void;
 }) => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
+
+  const isPasswordMismatch = Boolean(password) &&
+    password !== passwordConfirm;
+
   useEffect(() => {
     if (userDisplayName) {
       onContinue();
+      return;
     }
   }, [onContinue, userDisplayName]);
 
@@ -136,14 +156,119 @@ export const SigninStep = ({
     onContinue();
   }, [onContinue]);
 
+  const handleCreateAccountSubmit = useCallback(
+    (event: FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+
+      signIn("credentials", {
+        name,
+        email,
+        password
+      });
+    }, [
+    name,
+    email,
+    password,
+  ]
+  );
+
+  const handleNameChange = useCallback(
+    fieldChangeHandler(setName),
+    [setName]
+  );
+
+  const handleEmailChange = useCallback(
+    fieldChangeHandler(setEmail),
+    [setEmail]
+  );
+
+  const handlePasswordChange = useCallback(
+    fieldChangeHandler(setPassword),
+    [setPassword]
+  );
+
+  const handlePasswordConfirmChange = useCallback(
+    fieldChangeHandler(setPasswordConfirm),
+    [setPasswordConfirm]
+  );
+
   return (
     <OnboardingStep>
       <Stack>
-        <Typography variant="h3" align="center">
+        <Typography variant="h4" align="center">
           Welcome to Chefnotes!
         </Typography>
 
-        <IconButton onClick={handleGoogleClick} sx={{paddingTop: 6}}>
+        <Container
+          component="form"
+          onSubmit={handleCreateAccountSubmit}
+          sx={{
+            paddingTop: 2,
+          }}
+        >
+          <Stack spacing={1}>
+            <TextField
+              label="Name:"
+              name="name"
+              value={name}
+              onChange={handleNameChange}
+              required
+              fullWidth
+            />
+            <TextField
+              label="Email:"
+              name="email"
+              value={email}
+              onChange={handleEmailChange}
+              required
+              fullWidth
+            />
+            <TextField
+              label="Password:"
+              name="password"
+              type="password"
+              value={password}
+              onChange={handlePasswordChange}
+              required
+              fullWidth
+            />
+            <TextField
+              label="Confirm Password:"
+              name="password_confirm"
+              type="password"
+              value={passwordConfirm}
+              onChange={handlePasswordConfirmChange}
+              error={isPasswordMismatch}
+              helperText={
+                isPasswordMismatch ? (
+                  "Passwords do not match"
+                ) : " "
+              }
+              fullWidth
+            />
+            <Stack
+              direction="row"
+              justifyContent="center"
+              paddingBottom={2}
+            >
+              <Button
+                type="submit"
+                variant="contained"
+                disabled={!(
+                  Boolean(name) &&
+                  Boolean(email) &&
+                  Boolean(password) &&
+                  !isPasswordMismatch
+                )}
+              >
+                Create Account
+              </Button>
+              {/* TODO: add Forgot Password functionality */}
+            </Stack>
+          </Stack>
+        </Container>
+
+        <IconButton onClick={handleGoogleClick}>
           <GoogleIcon fontSize="large" />
         </IconButton>
       </Stack>
@@ -167,7 +292,7 @@ export const AppPurposeStep = ({
     >
       <Typography align="center">
         Chefnotes helps you cook with the leftovers and ingredients in your
-        kitchen, preventing food waste and creating delicious and easy recipes. 
+        kitchen, preventing food waste and creating delicious and easy recipes.
       </Typography>
     </OnboardingStep>
   );
@@ -202,8 +327,8 @@ export const NumDinersStep = ({
   onStepBack,
   onStepForward,
 }: {
-  numDiners: number|null;
-  updateNumDiners: (numDiners: number|null) => void;
+  numDiners: number | null;
+  updateNumDiners: (numDiners: number | null) => void;
   onStepBack: () => void;
   onStepForward: () => void;
 }) => {
@@ -211,7 +336,7 @@ export const NumDinersStep = ({
 
   const handleChange = useCallback((
     event: React.MouseEvent<HTMLElement>,
-    numDiners: number|null
+    numDiners: number | null
   ) => {
     updateNumDiners(numDiners);
   }, [updateNumDiners]);
@@ -282,40 +407,40 @@ export const DietaryRestrictionsStep = ({
       onStepBack={onStepBack}
       onStepForward={onStepForward}
     >
-        <Typography align="center">
-            Do you have any dietary restrictions?
-        </Typography>
+      <Typography align="center">
+        Do you have any dietary restrictions?
+      </Typography>
 
-        <ToggleButtonGroup
-            value={restrictions}
-            onChange={handleChange}
-        >
-            <Grid container>
-            {
-                ALL_DIETARY_RESTRICTIONS.map((restriction) => (
-                    <Grid item key={restriction} xs={6}>
-                        <ToggleButton value={restriction} fullWidth>
-                            {restriction}
-                        </ToggleButton>
-                    </Grid>
-                ))
-            }
-            </Grid>
-        </ToggleButtonGroup>
+      <ToggleButtonGroup
+        value={restrictions}
+        onChange={handleChange}
+      >
+        <Grid container>
+          {
+            ALL_DIETARY_RESTRICTIONS.map((restriction) => (
+              <Grid item key={restriction} xs={6}>
+                <ToggleButton value={restriction} fullWidth>
+                  {restriction}
+                </ToggleButton>
+              </Grid>
+            ))
+          }
+        </Grid>
+      </ToggleButtonGroup>
     </OnboardingStep>
   );
 };
 
 export const AllergiesStep = ({
-    selectedAllergies,
-    updateSelectedAllergies,
-    onStepBack,
-    onStepForward,
+  selectedAllergies,
+  updateSelectedAllergies,
+  onStepBack,
+  onStepForward,
 }: {
-    selectedAllergies: Allergen[];
-    updateSelectedAllergies: (allergies: Allergen[]) => void;
-    onStepBack: () => void;
-    onStepForward: () => void;
+  selectedAllergies: Allergen[];
+  updateSelectedAllergies: (allergies: Allergen[]) => void;
+  onStepBack: () => void;
+  onStepForward: () => void;
 }) => {
   return (
     <OnboardingStep
@@ -324,17 +449,17 @@ export const AllergiesStep = ({
       onStepBack={onStepBack}
       onStepForward={onStepForward}
     >
-        <Stack>
-            <Typography align="center">
-                Do you have any allergies?
-            </Typography>
+      <Stack>
+        <Typography align="center">
+          Do you have any allergies?
+        </Typography>
 
-            <SelectableList
-                items={ALL_ALLERGENS}
-                selectedItems={selectedAllergies}
-                updateSelectedItems={updateSelectedAllergies}
-            />
-        </Stack>
+        <SelectableList
+          items={ALL_ALLERGENS}
+          selectedItems={selectedAllergies}
+          updateSelectedItems={updateSelectedAllergies}
+        />
+      </Stack>
     </OnboardingStep>
   );
 };
@@ -350,25 +475,25 @@ export const ToolsStep = ({
   onStepBack: () => void;
   onStepForward: () => void;
 }) => {
-    return (
-        <OnboardingStep
-            totalSteps={NUM_STEPS - STEPS_WITHOUT_DOTS}
-            step={Step.TOOLS - STEPS_WITHOUT_DOTS}
-            onStepBack={onStepBack}
-            onStepForward={onStepForward}
-        >
-            <Typography align="center">
-                What kitchen utensils and equipment do you have in your kitchen?
-            </Typography>
+  return (
+    <OnboardingStep
+      totalSteps={NUM_STEPS - STEPS_WITHOUT_DOTS}
+      step={Step.TOOLS - STEPS_WITHOUT_DOTS}
+      onStepBack={onStepBack}
+      onStepForward={onStepForward}
+    >
+      <Typography align="center">
+        What kitchen utensils and equipment do you have in your kitchen?
+      </Typography>
 
-            <SelectableList
-                items={ALL_KITCHEN_TOOLS}
-                searchPlaceholder="Microwave, stove, etc."
-                selectedItems={selectedTools}
-                updateSelectedItems={updateSelectedTools}
-            />
-        </OnboardingStep>
-    );
+      <SelectableList
+        items={ALL_KITCHEN_TOOLS}
+        searchPlaceholder="Microwave, stove, etc."
+        selectedItems={selectedTools}
+        updateSelectedItems={updateSelectedTools}
+      />
+    </OnboardingStep>
+  );
 };
 
 export const ConclusionStep = ({
@@ -378,30 +503,30 @@ export const ConclusionStep = ({
   onStepBack: () => void;
   onStepForward: () => void;
 }) => {
-    const router = useRouter();
-    const handleClick = useCallback(() => {
-        setOnboardingComplete();
-        router.push("/pantry");
-    }, [router]);
+  const router = useRouter();
+  const handleClick = useCallback(() => {
+    setOnboardingComplete();
+    router.push("/pantry");
+  }, [router]);
 
-    return (
-        <OnboardingStep
-            totalSteps={NUM_STEPS - STEPS_WITHOUT_DOTS}
-            step={Step.CONCLUSION - STEPS_WITHOUT_DOTS}
-            onStepBack={onStepBack}
-            onStepForward={onStepForward}
-        >
-            <Stack>
-                <Typography align="center" paddingTop={2} paddingBottom={2}>
-                    We&apos;ve recorded all of your answers in order to give you the best
-                    customizable recipes, tailored just for you! You can always reset
-                    your preferences in your &quot;Profile&quot;.
-                </Typography>
+  return (
+    <OnboardingStep
+      totalSteps={NUM_STEPS - STEPS_WITHOUT_DOTS}
+      step={Step.CONCLUSION - STEPS_WITHOUT_DOTS}
+      onStepBack={onStepBack}
+      onStepForward={onStepForward}
+    >
+      <Stack>
+        <Typography align="center" paddingTop={2} paddingBottom={2}>
+          We&apos;ve recorded all of your answers in order to give you the best
+          customizable recipes, tailored just for you! You can always reset
+          your preferences in your &quot;Profile&quot;.
+        </Typography>
 
-                <Button variant="contained" onClick={handleClick}>
-                    Start cookin&apos;
-                </Button>
-            </Stack>
-        </OnboardingStep>
-    );
+        <Button variant="contained" onClick={handleClick}>
+          Start cookin&apos;
+        </Button>
+      </Stack>
+    </OnboardingStep>
+  );
 };
